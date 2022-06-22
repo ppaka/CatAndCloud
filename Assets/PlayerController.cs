@@ -13,11 +13,12 @@ public class PlayerController : MonoBehaviour
     {
         rigid2D = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        Application.targetFrameRate = 60;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && rigid2D.velocity.y == 0)
         {
             rigid2D.AddForce(transform.up * jumpForce);
         }
