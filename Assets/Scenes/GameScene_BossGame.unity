@@ -510,7 +510,7 @@ Camera:
   far clip plane: 1000
   field of view: 50
   orthographic: 1
-  orthographic size: 2.5
+  orthographic size: 4.7839637
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -534,7 +534,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0.000000015339431, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.14999986, y: 0.00000035762787, z: -12}
+  m_LocalPosition: {x: -0.14999986, y: 0.0000004172325, z: -12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -983,7 +983,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cloudSprite: {fileID: 21300000, guid: 53be17a7386173544aabc17803c296ea, type: 3}
-  maxCount: 10
+  maxCount: 30
   curCount: 0
   curXPos: 0
   curYPos: 0
@@ -991,8 +991,8 @@ MonoBehaviour:
   firstCloudSpawnPosition: {x: 0, y: 0, z: 0}
   firstPrefabPosition: {x: 0, y: -3, z: 0}
   parent: {fileID: 2632610}
-  isBossStage: 1
-  bossRoomPrefab: {fileID: 1869301315169111445, guid: 8891be5b91690e4408cd2a814a4be3ad, type: 3}
+  isBossStage: 0
+  bossRoomPrefab: {fileID: 0}
 --- !u!4 &1190723183
 Transform:
   m_ObjectHideFlags: 0
@@ -1055,7 +1055,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7774998, y: 1}
+    m_SensorSize: {x: 0.56177264, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1071,8 +1071,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1253001868}
-  m_LocalRotation: {x: 0.000000015339431, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.14999986, y: 0.00000035762787, z: -12}
+  m_LocalRotation: {x: 0.000000015339431, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.14999986, y: 0.0000004172325, z: -12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1087,12 +1087,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1253001868}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 460e7af2dc990d24fb68cf0361ccdb32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLockXPos: 0
+  isLockXPos: 1
   isLockYPos: 0
   isLockZPos: 0
   xPos: 0

@@ -1,10 +1,9 @@
-using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    Rigidbody2D rigid2D;
-    Animator animator;
+    private Rigidbody2D _rigid2D;
+    private Animator _animator;
     float jumpForce = 680;
     public float walkForce = 30;
 
@@ -15,20 +14,24 @@ public class PlayerController : MonoBehaviour
     public Transform spawnPoint;
     private bool _isJumping;
     public KeyCode jumpKey = KeyCode.Space, leftKey = KeyCode.A, rightKey = KeyCode.D;
+    private CloudGenerator _cloudGenerator;
 
     private void Start()
     {
-        rigid2D = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        _rigid2D = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
         Application.targetFrameRate = 60;
+        _cloudGenerator = FindObjectOfType<CloudGenerator>();
+        spawnPoint.position = _cloudGenerator.firstCloudSpawnPosition;
+        transform.position = _cloudGenerator.firstCloudSpawnPosition;
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(jumpKey) && !_isJumping)
         {
-            rigid2D.AddForce(transform.up * jumpForce);
-            animator.SetBool(IsJumping, true);
+            _rigid2D.AddForce(transform.up * jumpForce);
+            _animator.SetBool(IsJumping, true);
             _isJumping = true;
         }
 
@@ -36,25 +39,25 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(rightKey)) key = 1;
         if (Input.GetKey(leftKey)) key = -1;
 
-        var speedx = Mathf.Abs(rigid2D.velocity.x);
+        var speedx = Mathf.Abs(_rigid2D.velocity.x);
         if (speedx < maxWalkSpeed)
         {
-            rigid2D.AddForce(transform.right * key * walkForce);
+            _rigid2D.AddForce(transform.right * key * walkForce);
         }
         if (key != 0)
         {
             transform.localScale = new Vector3(key, 1, 1);
         }
-        animator.speed = speedx * 0.5f;
+        _animator.speed = speedx * 0.5f;
 
-        if (animator.GetBool(IsJumping))
+        if (_animator.GetBool(IsJumping))
         {
-            animator.speed = 1;
+            _animator.speed = 1;
         }
 
         if (worldOutBottomLine.transform.position.y > transform.position.y)
         {
-            rigid2D.velocity = new Vector2(0, 0);
+            _rigid2D.velocity = new Vector2(0, 0);
             transform.position = spawnPoint.transform.position;
         }
     }
@@ -63,7 +66,12 @@ public class PlayerController : MonoBehaviour
     {
         if (col.CompareTag("Cloud"))
         {
-            animator.SetBool(IsJumping, false);
+            _animator.SetBool(IsJumping, false);
+            _isJumping = false;
+        }
+        else if (col.CompareTag("Player"))
+        {
+            _animator.SetBool(IsJumping, false);
             _isJumping = false;
         }
     }
