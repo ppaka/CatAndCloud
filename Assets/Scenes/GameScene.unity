@@ -260,7 +260,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!58 &213648843
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -295,8 +295,8 @@ Rigidbody2D:
   m_GravityScale: 3
   m_Material: {fileID: 0}
   m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!212 &213648845
 SpriteRenderer:
@@ -404,11 +404,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkForce: 40
+  curHp: 0
+  maxHp: 500
   worldOutBottomLine: {fileID: 66800179}
   spawnPoint: {fileID: 1781658073}
   jumpKey: 119
   leftKey: 97
   rightKey: 100
+  canMove: 1
 --- !u!95 &213648849
 Animator:
   serializedVersion: 4
@@ -455,6 +458,53 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.29897845, y: 0.029135883}
   m_EdgeRadius: 0
+--- !u!1 &371771406
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 371771408}
+  - component: {fileID: 371771407}
+  m_Layer: 0
+  m_Name: StageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &371771407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371771406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe22ff0ed00149109b1ca377efa3400c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player1: {fileID: 213648848}
+  player2: {fileID: 868640361}
+  group: {fileID: 972797410}
+--- !u!4 &371771408
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371771406}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,7 +584,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0.000000015339431, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.14999986, y: 0.00000035762787, z: -12}
+  m_LocalPosition: {x: -0.14999986, y: 0.0000004172325, z: -12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -704,7 +754,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!61 &868640359
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -764,11 +814,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkForce: 40
+  curHp: 0
+  maxHp: 500
   worldOutBottomLine: {fileID: 66800179}
   spawnPoint: {fileID: 1781658073}
   jumpKey: 273
   leftKey: 276
   rightKey: 275
+  canMove: 1
 --- !u!61 &868640362
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -829,8 +882,8 @@ Rigidbody2D:
   m_GravityScale: 3
   m_Material: {fileID: 0}
   m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!212 &868640365
 SpriteRenderer:
@@ -983,16 +1036,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cloudSprite: {fileID: 21300000, guid: 53be17a7386173544aabc17803c296ea, type: 3}
-  maxCount: 10
+  maxCount: 30
   curCount: 0
   curXPos: 0
   curYPos: 0
-  prefab: {fileID: 9011865867563001886, guid: f2186e266fe37f24b940764e90a91642, type: 3}
+  prefab: {fileID: 9011865867563001886, guid: 662e20b383626b64686aa548472124a4, type: 3}
   firstCloudSpawnPosition: {x: 0, y: 0, z: 0}
   firstPrefabPosition: {x: 0, y: -3, z: 0}
   parent: {fileID: 2632610}
-  isBossStage: 1
-  bossRoomPrefab: {fileID: 1869301315169111445, guid: 8891be5b91690e4408cd2a814a4be3ad, type: 3}
+  isBossStage: 0
+  bossRoomPrefab: {fileID: 0}
+  lastCloud: {fileID: 0}
+  stageOneLastCloudPrefab: {fileID: 9011865867563001886, guid: f2186e266fe37f24b940764e90a91642, type: 3}
 --- !u!4 &1190723183
 Transform:
   m_ObjectHideFlags: 0
@@ -1048,14 +1103,14 @@ MonoBehaviour:
   m_Follow: {fileID: 972797411}
   m_Lens:
     FieldOfView: 50
-    OrthographicSize: 5
+    OrthographicSize: 6
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7774998, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1071,8 +1126,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1253001868}
-  m_LocalRotation: {x: 0.000000015339431, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.14999986, y: 0.00000035762787, z: -12}
+  m_LocalRotation: {x: 0.000000015339431, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.14999986, y: 0.0000004172325, z: -12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1087,12 +1142,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1253001868}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 460e7af2dc990d24fb68cf0361ccdb32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLockXPos: 0
+  isLockXPos: 1
   isLockYPos: 0
   isLockZPos: 0
   xPos: 0

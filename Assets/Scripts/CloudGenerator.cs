@@ -15,6 +15,7 @@ public class CloudGenerator : MonoBehaviour
     public bool isBossStage;
 
     public GameObject bossRoomPrefab;
+    public GameObject lastCloud, stageOneLastCloudPrefab;
 
     private void Awake()
     {
@@ -48,8 +49,16 @@ public class CloudGenerator : MonoBehaviour
 
                 if (Math.Abs(curXPos - pos.x) < 0.4f) continue;
 
-                var obj = Instantiate(prefab, pos, Quaternion.identity);
-                obj.transform.SetParent(parent, true);
+                if (curCount == maxCount - 1)
+                {
+                    var obj = Instantiate(stageOneLastCloudPrefab, pos, Quaternion.identity);
+                    obj.transform.SetParent(parent, true);
+                }
+                else
+                {
+                    var obj = Instantiate(prefab, pos, Quaternion.identity);
+                    obj.transform.SetParent(parent, true);
+                }
                 curXPos = pos.x;
                 curYPos = pos.y;
                 curCount++;
@@ -83,8 +92,16 @@ public class CloudGenerator : MonoBehaviour
 
                 if (Math.Abs(curXPos - pos.x) < 0.4f) continue;
 
-                var obj = Instantiate(prefab, pos, Quaternion.identity);
-                obj.transform.SetParent(parent, true);
+                if (curCount == maxCount - 1)
+                {
+                    var obj = Instantiate(lastCloud, pos, Quaternion.identity);
+                    obj.transform.SetParent(parent, true);
+                }
+                else
+                {
+                    var obj = Instantiate(prefab, pos, Quaternion.identity);
+                    obj.transform.SetParent(parent, true);
+                }
                 curXPos = pos.x;
                 curYPos = pos.y;
                 curCount++;
