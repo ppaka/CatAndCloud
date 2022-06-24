@@ -240,7 +240,7 @@ public class Another : MonoBehaviour
                 bossRoom.roomVCam.DOKill(true);
                 bossRoom.roomVCam
                     .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
-                yield return new DOTweenCYInstruction.WaitForCompletion(bigLaser.DOScaleX(6.9f, 0.5f).SetUpdate(true));
+                yield return new DOTweenCYInstruction.WaitForCompletion(bigLaser.DOScaleX(6.95f, 0.7f).SetUpdate(true));
                 yield return new WaitForSeconds(0.6f);
                 smallLasers[0].gameObject.SetActive(true);
                 smallLasers[1].gameObject.SetActive(true);
