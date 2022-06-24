@@ -9,21 +9,68 @@ public class PlayerController : MonoBehaviour
     float jumpForce = 680;
     public float walkForce = 30;
 
-    public int curHp;
-    public int maxHp = 500;
+    private int curHp;
+    private int maxHp = 2000;
 
     float maxWalkSpeed = 2;
     private static readonly int IsJumping = Animator.StringToHash("isJumping");
 
     public GameObject worldOutBottomLine;
     public Transform spawnPoint;
-    private bool _isJumping;
-    public KeyCode jumpKey = KeyCode.Space, leftKey = KeyCode.A, rightKey = KeyCode.D;
+    private bool _isJumping, _isDowning;
+    public KeyCode jumpKey = KeyCode.Space, leftKey = KeyCode.A, rightKey = KeyCode.D, downKey = KeyCode.S, attackKey = KeyCode.F;
     private CloudGenerator _cloudGenerator;
     public bool canMove = true;
+    public bool canAttack = true;
 
     public Image hpImage;
     public GameObject hpCanvasObject;
+
+    public int atk = 100, def;
+    public LayerMask bossLayer;
+    public Transform[] attackTf;
+
+    public Another boss;
+
+    private float timeSinceLastHit=100, timeSinceLastFire = 100;
+    private float _invincibleEffectTime = 0.8f, _invincibleTime = 0.8f;
+
+    private void Attack()
+    {
+        if (!_spriteRenderer.flipX)
+        {
+            var col = Physics2D.OverlapCircle(attackTf[0].position, 1, bossLayer);
+            if (!col) return;
+            boss.GetDamage(atk);
+        }
+        else
+        {
+            var col = Physics2D.OverlapCircle(attackTf[1].position, 1, bossLayer);
+            if (!col) return;
+            boss.GetDamage(atk);
+        }
+    }
+    
+    public bool isInvicible()
+    {
+        if (timeSinceLastHit < _invincibleTime)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void GetDamage(int dmg)
+    {
+        if (isInvicible()) return;
+        curHp -= 100/(100+def) * dmg;
+        
+        timeSinceLastHit = 0;
+        _invincibleTime = 0.8f;
+        _invincibleEffectTime =0.8f;
+        hpImage.fillAmount = (float)curHp / maxHp;
+        if (curHp <= 0) print("플레이어죽음");
+    }
 
     private void Start()
     {
@@ -42,15 +89,55 @@ public class PlayerController : MonoBehaviour
         _rigid2D.AddForce(transform.up * jumpForce);
         _animator.SetBool(IsJumping, true);
         _isJumping = true;
+        _isDowning = false;
+    }
+    
+    private void Clock()
+    {
+        timeSinceLastFire += Time.deltaTime;
+        timeSinceLastHit += Time.deltaTime;
+    }
+    
+    private void InvinsibleEffect()
+    {
+        if (timeSinceLastHit > _invincibleEffectTime)
+        {
+            var color = _spriteRenderer.color;
+            color.a = 1;
+            _spriteRenderer.color = color;
+        }
+        else
+        {
+            var color = _spriteRenderer.color;
+            color.a = Mathf.Cos(timeSinceLastHit * 20f);
+            _spriteRenderer.color = color;
+        }
     }
 
     private void Update()
     {
+        Clock();
+        InvinsibleEffect();
+        
+        if (canAttack)
+        {
+            if (Input.GetKeyDown(attackKey) && !_isJumping)
+            {
+                Attack();
+            }
+        }
+        
         if (canMove)
         {
-            if (Input.GetKeyDown(jumpKey) && !_isJumping)
+            if (Input.GetKeyDown(jumpKey) && !_isJumping && !_isDowning)
             {
                 Jump();
+            }
+
+            if (Input.GetKeyDown(downKey) && _isJumping && !_isDowning)
+            {
+                _rigid2D.AddForce(-transform.up * jumpForce/1.2f);
+                _isDowning = true;
             }
 
             var key = 0;
@@ -97,21 +184,24 @@ public class PlayerController : MonoBehaviour
             if (_animator == null)_animator = GetComponent<Animator>();
             _animator.SetBool(IsJumping, false);
             _isJumping = false;
+            _isDowning = false;
         }
         else if (col.CompareTag("Player"))
         {
             _animator.SetBool(IsJumping, false);
             _isJumping = false;
+            _isDowning = false;
         }
         else if (col.CompareTag("Boss"))
         {
             _animator.SetBool(IsJumping, false);
             _isJumping = false;
+            _isDowning = false;
         }
         else if (col.CompareTag("Bullet"))
         {
-            curHp--;
-            hpImage.fillAmount = (float)curHp / maxHp;
+            Destroy(col.gameObject);
+            GetDamage(boss.atk);
         }
     }
 }

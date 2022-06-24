@@ -3,17 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BossRoomManager : MonoBehaviour
 {
     public BossRoomEnterController enterController;
     public Transform allObj;
     public Another boss;
+    
+    public Transform[] teleportPosition;
 
     private GameObject _playerCam;
     private PlayerController[] _playerControllers;
 
-    private bool _lockToScreenAllPlayers;
+    public Transform roomVCam;
+
+    public bool lockToScreenAllPlayers;
 
     private void Start()
     {
@@ -23,7 +28,7 @@ public class BossRoomManager : MonoBehaviour
 
     private void Update()
     {
-        if (_lockToScreenAllPlayers)
+        if (lockToScreenAllPlayers)
         {
             foreach (var player in _playerControllers)
             {
@@ -61,13 +66,16 @@ public class BossRoomManager : MonoBehaviour
         _playerCam.SetActive(false);
         boss.virtualCam.gameObject.SetActive(false);
         yield return new WaitForSeconds(1.5f);
+        boss.group.gameObject.SetActive(true);
+        boss.teleportPosition = teleportPosition;
         _playerControllers = FindObjectsOfType<PlayerController>();
         foreach (var player in _playerControllers)
         {
             player.canMove = true;
+            player.canAttack = true;
             player.hpCanvasObject.SetActive(true);
         }
-        _lockToScreenAllPlayers = true;
+        lockToScreenAllPlayers = true;
         boss.StartAttack();
     }
 }

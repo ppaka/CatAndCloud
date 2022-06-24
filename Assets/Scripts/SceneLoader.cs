@@ -63,7 +63,6 @@ public class SceneLoader : MonoBehaviour
 
     public void ChangeScene(string sceneName) // 외부에서 전환할 씬 이름 받기
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
 
         DOTween.KillAll();
 
@@ -74,10 +73,16 @@ public class SceneLoader : MonoBehaviour
                 StartCoroutine(LoadScene(sceneName)); // 씬 로드 코루틴 실행
             });
     }
+    
+    public void ChangeSceneImmediate(string sceneName) // 외부에서 전환할 씬 이름 받기
+    {
+        DOTween.KillAll();
+
+        SceneManager.LoadScene(sceneName);
+    }
 
     public void NoLoadChangeScene(string sceneName)
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
         
         // 두트윈 시퀀스 킬
 
@@ -88,7 +93,6 @@ public class SceneLoader : MonoBehaviour
 
     public void ChangeSceneAdditive(string sceneName)
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
 
         // 두트윈 시퀀스 킬
         

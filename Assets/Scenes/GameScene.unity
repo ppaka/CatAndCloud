@@ -411,7 +411,18 @@ MonoBehaviour:
   jumpKey: 119
   leftKey: 97
   rightKey: 100
+  downKey: 115
+  attackKey: 102
   canMove: 1
+  canAttack: 0
+  hpImage: {fileID: 0}
+  hpCanvasObject: {fileID: 0}
+  atk: 100
+  def: 0
+  bossLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  attackTf: []
 --- !u!95 &213648849
 Animator:
   serializedVersion: 4
@@ -821,7 +832,18 @@ MonoBehaviour:
   jumpKey: 273
   leftKey: 276
   rightKey: 275
+  downKey: 115
+  attackKey: 102
   canMove: 1
+  canAttack: 0
+  hpImage: {fileID: 0}
+  hpCanvasObject: {fileID: 0}
+  atk: 100
+  def: 0
+  bossLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  attackTf: []
 --- !u!61 &868640362
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1110,7 +1132,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 1.7774998, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0

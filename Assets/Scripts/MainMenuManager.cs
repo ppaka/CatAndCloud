@@ -1,7 +1,13 @@
+using System;
 using UnityEngine;
 
 public class MainMenuManager : MonoBehaviour
 {
+    private void Start()
+    {
+        Time.timeScale = 1;
+    }
+
     public void OnClickPlay()
     {
         GameManager.players = 1;
