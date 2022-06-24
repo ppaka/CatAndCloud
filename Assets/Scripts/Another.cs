@@ -38,6 +38,8 @@ public class Another : MonoBehaviour
 
     public BossRoomManager bossRoom;
 
+    public SpriteRenderer spriteRenderer;
+
     public void GetDamage(int dmg)
     {
         curHp -= 100 / (100 + def) * dmg;
@@ -122,13 +124,14 @@ public class Another : MonoBehaviour
     {
         while (true)
         {
-            AttackMode[] modes = {AttackMode.FireBullet, AttackMode.FireLaser, AttackMode.HorizontalLaser};
+            AttackMode[] modes = {AttackMode.FireBullet, AttackMode.FireLaser, AttackMode.FireBullet, AttackMode.HorizontalLaser, AttackMode.BigAndSmallLaser};
             var  currentAttackMode = modes[Random.Range(0, modes.Length)];
             yield return new WaitForSeconds(1.8f);
 
 
             if (currentAttackMode == AttackMode.FireBullet)
             {
+                spriteRenderer.flipX = false;
                 transform.position = teleportPosition[Random.Range(0, teleportPosition.Length)].position;
                 for (int j = 0; j < 30; j++)
                 {
@@ -148,6 +151,7 @@ public class Another : MonoBehaviour
             }
             else if (currentAttackMode == AttackMode.FireLaser)
             {
+                spriteRenderer.flipX = true;
                 transform.position = teleportPosition[Random.Range(0, teleportPosition.Length)].position;
                 for (var i = 0; i < lasers.Length; i++)
                 {
@@ -180,6 +184,7 @@ public class Another : MonoBehaviour
             }
             else if (currentAttackMode == AttackMode.HorizontalLaser)
             {
+                spriteRenderer.flipX = false;
                 transform.position = teleportPosition[Random.Range(0, teleportPosition.Length)].position;
                 if (Random.value > 0.5f)
                 {
@@ -221,9 +226,14 @@ public class Another : MonoBehaviour
                 bossRoom.roomVCam
                     .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
                 yield return new WaitForSeconds(1);
+                for (var i = 0; i < horizontalLasers.Length; i++)
+                {
+                    horizontalLasers[i].gameObject.SetActive(false);
+                }
             }
             else
             {
+                spriteRenderer.flipX = true;
                 transform.position = teleportPosition[Random.Range(0, teleportPosition.Length)].position;
                 bigLaser.gameObject.SetActive(true);
                 bigLaser.localScale = new Vector3(0.5f, bigLaser.localScale.y, bigLaser.localScale.z);

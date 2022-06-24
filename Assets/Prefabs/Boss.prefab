@@ -355,8 +355,37 @@ MonoBehaviour:
   group: {fileID: 0}
   hpImage: {fileID: 0}
   curHp: 0
-  maxHp: 20000
+  maxHp: 35000
   atk: 40
   def: 0
   teleportPosition: []
+  lasers:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  horizontalLasers:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  bigLaser: {fileID: 0}
+  smallLasers:
+  - {fileID: 0}
+  - {fileID: 0}
   lightImage: {fileID: 0}
+  bossRoom: {fileID: 0}
+  spriteRenderer: {fileID: 8166264038234212316}

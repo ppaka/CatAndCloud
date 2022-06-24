@@ -5185,10 +5185,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1782529152469380062}
     - target: {fileID: 1728863265873436636, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
-      propertyPath: maxHp
-      value: 25000
-      objectReference: {fileID: 0}
-    - target: {fileID: 1728863265873436636, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
       propertyPath: hpImage
       value: 
       objectReference: {fileID: 6105458979319395423}
@@ -5200,10 +5196,6 @@ PrefabInstance:
       propertyPath: lightImage
       value: 
       objectReference: {fileID: 4852023277078280027}
-    - target: {fileID: 1728863265873436636, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
-      propertyPath: lasers.Array.size
-      value: 11
-      objectReference: {fileID: 0}
     - target: {fileID: 1728863265873436636, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
       propertyPath: lasers.Array.data[0]
       value: 
@@ -5249,10 +5241,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1425312990291976780}
     - target: {fileID: 1728863265873436636, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
-      propertyPath: smallLasers.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1728863265873436636, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
       propertyPath: smallLasers.Array.data[0]
       value: 
       objectReference: {fileID: 8571878064659883213}
@@ -5260,10 +5248,6 @@ PrefabInstance:
       propertyPath: smallLasers.Array.data[1]
       value: 
       objectReference: {fileID: 9203599534937827563}
-    - target: {fileID: 1728863265873436636, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
-      propertyPath: horizontalLasers.Array.size
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 1728863265873436636, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
       propertyPath: horizontalLasers.Array.data[0]
       value: 
@@ -5307,10 +5291,6 @@ PrefabInstance:
     - target: {fileID: 8166264038234212315, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
       propertyPath: m_Name
       value: Boss
-      objectReference: {fileID: 0}
-    - target: {fileID: 8166264038234212315, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8166264038234212319, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
       propertyPath: m_RootOrder
