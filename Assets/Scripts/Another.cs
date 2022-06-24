@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,14 +8,15 @@ enum AttackMode
 {
     FireBullet,
     FireLaser,
-    StarAttack
+    HorizontalLaser,
+    BigAndSmallLaser
 }
 
 public class Another : MonoBehaviour
 {
     public GameObject virtualCam;
     public BulletA bulletPrefab;
-    
+
     private AttackMode _lastAttack;
     private Coroutine _coroutine;
 
@@ -27,14 +27,20 @@ public class Another : MonoBehaviour
     public int atk = 40, def;
 
     public Transform[] teleportPosition;
+    public Transform[] lasers;
+    public Transform[] horizontalLasers;
+    public Transform bigLaser;
+    public Transform[] smallLasers;
 
     private PlayerController[] _playerControllers;
 
     public Image lightImage;
 
+    public BossRoomManager bossRoom;
+
     public void GetDamage(int dmg)
     {
-        curHp -= 100/(100+def) * dmg;
+        curHp -= 100 / (100 + def) * dmg;
         if (curHp <= 0)
         {
             StopCoroutine(_coroutine);
@@ -44,15 +50,23 @@ public class Another : MonoBehaviour
 
     private IEnumerator GameEnd()
     {
+        foreach (var laser in lasers)
+        {
+            laser.gameObject.SetActive(false);
+        }
+        foreach (var laser in horizontalLasers)
+        {
+            laser.gameObject.SetActive(false);
+        }
         Time.timeScale = 0;
-            var bossRoom = FindObjectOfType<BossRoomManager>();
-            bossRoom.lockToScreenAllPlayers = false;
+        bossRoom.lockToScreenAllPlayers = false;
         foreach (var player in _playerControllers)
         {
             player.canAttack = false;
             player.canMove = false;
             player.hpCanvasObject.SetActive(false);
         }
+
         group.gameObject.SetActive(false);
 
         yield return new DOTweenCYInstruction.WaitForCompletion(lightImage.DOFade(1, 0.08f).SetUpdate(true));
@@ -65,7 +79,7 @@ public class Another : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.2f);
         yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.SetText(".....!?"));
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-        yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.SetText("!!!!!"));
+        yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.SetText("!!!!!!"));
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
         DialogueManager.Instance.FadeOut();
         yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.Close());
@@ -73,11 +87,12 @@ public class Another : MonoBehaviour
         virtualCam.gameObject.SetActive(false);
         yield return new WaitForSecondsRealtime(1.5f);
         lightImage.DOFade(1, 5).SetUpdate(true);
-        yield return new DOTweenCYInstruction.WaitForCompletion(bossRoom.roomVCam.DOShakePosition(5).SetUpdate(true));
-        
-        //SceneLoader.Instance.ChangeSceneImmediate();
+        yield return new DOTweenCYInstruction.WaitForCompletion(bossRoom.roomVCam
+            .DOShakePosition(5, 1f, 20, 90f, false, false).SetEase(Ease.Linear).SetUpdate(true));
+
+        SceneLoader.Instance.ChangeSceneImmediate("Ending");
     }
-    
+
     private void Start()
     {
         curHp = maxHp;
@@ -95,7 +110,7 @@ public class Another : MonoBehaviour
 
     private void Update()
     {
-        hpImage.fillAmount = (float)curHp / maxHp;
+        hpImage.fillAmount = (float) curHp / maxHp;
     }
 
     public void StartAttack()
@@ -107,21 +122,10 @@ public class Another : MonoBehaviour
     {
         while (true)
         {
-            var currentAttackMode = AttackMode.FireBullet;
-            var value = Random.value;
-            for (var i = 0; i < 3; i++)
-            {
-                if (value < (i + 1) / 3f)
-                {
-                    currentAttackMode = (AttackMode)i;
-                    break;
-                }
-                currentAttackMode = (AttackMode)i;
-            }
-
+            AttackMode[] modes = {AttackMode.FireBullet, AttackMode.FireLaser, AttackMode.HorizontalLaser};
+            var  currentAttackMode = modes[Random.Range(0, modes.Length)];
             yield return new WaitForSeconds(1.8f);
 
-            
 
             if (currentAttackMode == AttackMode.FireBullet)
             {
@@ -130,16 +134,108 @@ public class Another : MonoBehaviour
                 {
                     for (var i = 0; i < GameManager.players; i++)
                     {
+                        if (!_playerControllers[i]) continue;
                         var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-                        bullet.moveDirection = (_playerControllers[i].transform.position - transform.position).normalized;
+                        bullet.moveDirection =
+                            (_playerControllers[i].transform.position - transform.position).normalized;
                     }
+
                     yield return new WaitForSeconds(0.1f);
                     if (j == 9) yield return new WaitForSeconds(0.9f);
                     else if (j == 19) yield return new WaitForSeconds(0.9f);
                     else if (j == 29) yield return new WaitForSeconds(0.9f);
                 }
             }
-            
+            else if (currentAttackMode == AttackMode.FireLaser)
+            {
+                for (var i = 0; i < lasers.Length; i++)
+                {
+                    lasers[i].gameObject.SetActive(true);
+
+                    bossRoom.roomVCam.DOKill(true);
+                    bossRoom.roomVCam
+                        .DOShakePosition(0.5f, 1f, 8, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                    yield return new WaitForSeconds(0.8f);
+                }
+
+                foreach (var laser in lasers)
+                {
+                    laser.gameObject.SetActive(false);
+                }
+                yield return new WaitForSeconds(1f);
+
+                foreach (var laser in lasers)
+                {
+                    laser.gameObject.SetActive(true);
+                    bossRoom.roomVCam.DOKill(true);
+                    bossRoom.roomVCam
+                        .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                }
+                yield return new WaitForSeconds(1f);
+                foreach (var laser in lasers)
+                {
+                    laser.gameObject.SetActive(false);
+                }
+            }
+            else if (currentAttackMode == AttackMode.HorizontalLaser)
+            {
+                if (Random.value > 0.5f)
+                {
+                    for (var i = 0; i < horizontalLasers.Length; i++)
+                    {
+                        horizontalLasers[i].gameObject.SetActive(true);
+
+                        bossRoom.roomVCam.DOKill(true);
+                        bossRoom.roomVCam
+                            .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                        yield return new WaitForSeconds(0.4f);
+                    }
+                }
+                else
+                {
+                    for (var i = horizontalLasers.Length - 1; i >= 1; i--)
+                    {
+                        horizontalLasers[i].gameObject.SetActive(true);
+
+                        bossRoom.roomVCam.DOKill(true);
+                        bossRoom.roomVCam
+                            .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                        yield return new WaitForSeconds(0.4f);
+                    }
+                }
+                
+                yield return new WaitForSeconds(0.4f);
+                for (var i = 0; i < horizontalLasers.Length; i++)
+                {
+                    horizontalLasers[i].gameObject.SetActive(false);
+                }
+                yield return new WaitForSeconds(0.8f);
+
+                for (var i = 0; i < horizontalLasers.Length; i++)
+                {
+                    horizontalLasers[i].gameObject.SetActive(true);
+                }
+                bossRoom.roomVCam.DOKill(true);
+                bossRoom.roomVCam
+                    .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                yield return new WaitForSeconds(1);
+            }
+            else
+            {
+                bigLaser.gameObject.SetActive(true);
+                bigLaser.localScale = new Vector3(0.5f, bigLaser.localScale.y, bigLaser.localScale.z);
+                bossRoom.roomVCam.DOKill(true);
+                bossRoom.roomVCam
+                    .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                yield return new DOTweenCYInstruction.WaitForCompletion(bigLaser.DOScaleX(6.9f, 0.5f).SetUpdate(true));
+                yield return new WaitForSeconds(0.6f);
+                smallLasers[0].gameObject.SetActive(true);
+                smallLasers[1].gameObject.SetActive(true);
+                yield return new WaitForSeconds(1f);
+                bigLaser.gameObject.SetActive(false);
+                smallLasers[0].gameObject.SetActive(false);
+                smallLasers[1].gameObject.SetActive(false);
+            }
             yield return null;
         }
     }

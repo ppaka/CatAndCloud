@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +19,13 @@ public class PlayerController : MonoBehaviour
     public GameObject worldOutBottomLine;
     public Transform spawnPoint;
     private bool _isJumping, _isDowning;
-    public KeyCode jumpKey = KeyCode.Space, leftKey = KeyCode.A, rightKey = KeyCode.D, downKey = KeyCode.S, attackKey = KeyCode.F;
+
+    public KeyCode jumpKey = KeyCode.Space,
+        leftKey = KeyCode.A,
+        rightKey = KeyCode.D,
+        downKey = KeyCode.S,
+        attackKey = KeyCode.F;
+
     private CloudGenerator _cloudGenerator;
     public bool canMove = true;
     public bool canAttack = true;
@@ -32,44 +39,56 @@ public class PlayerController : MonoBehaviour
 
     public Another boss;
 
-    private float timeSinceLastHit=100, timeSinceLastFire = 100;
+    private float timeSinceLastHit = 100, timeSinceLastFire = 100;
     private float _invincibleEffectTime = 0.8f, _invincibleTime = 0.8f;
+
+    private void Awake()
+    {
+        GameManager.alivePlayers = GameManager.players;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.alivePlayers--;
+        if (GameManager.alivePlayers <= 0) Application.Quit();
+    }
 
     private void Attack()
     {
         if (!_spriteRenderer.flipX)
         {
-            var col = Physics2D.OverlapCircle(attackTf[0].position, 1, bossLayer);
+            var col = Physics2D.OverlapCircle(attackTf[0].position, 0.8f, bossLayer);
             if (!col) return;
             boss.GetDamage(atk);
         }
         else
         {
-            var col = Physics2D.OverlapCircle(attackTf[1].position, 1, bossLayer);
+            var col = Physics2D.OverlapCircle(attackTf[1].position, 0.8f, bossLayer);
             if (!col) return;
             boss.GetDamage(atk);
         }
     }
-    
+
     public bool isInvicible()
     {
         if (timeSinceLastHit < _invincibleTime)
         {
             return true;
         }
+
         return false;
     }
 
     public void GetDamage(int dmg)
     {
         if (isInvicible()) return;
-        curHp -= 100/(100+def) * dmg;
-        
+        curHp -= 100 / (100 + def) * dmg;
+
         timeSinceLastHit = 0;
         _invincibleTime = 0.8f;
-        _invincibleEffectTime =0.8f;
-        hpImage.fillAmount = (float)curHp / maxHp;
-        if (curHp <= 0) print("플레이어죽음");
+        _invincibleEffectTime = 0.8f;
+        hpImage.fillAmount = (float) curHp / maxHp;
+        if (curHp <= 0) Destroy(gameObject);
     }
 
     private void Start()
@@ -91,13 +110,13 @@ public class PlayerController : MonoBehaviour
         _isJumping = true;
         _isDowning = false;
     }
-    
+
     private void Clock()
     {
         timeSinceLastFire += Time.deltaTime;
         timeSinceLastHit += Time.deltaTime;
     }
-    
+
     private void InvinsibleEffect()
     {
         if (timeSinceLastHit > _invincibleEffectTime)
@@ -118,7 +137,7 @@ public class PlayerController : MonoBehaviour
     {
         Clock();
         InvinsibleEffect();
-        
+
         if (canAttack)
         {
             if (Input.GetKeyDown(attackKey) && !_isJumping)
@@ -126,7 +145,7 @@ public class PlayerController : MonoBehaviour
                 Attack();
             }
         }
-        
+
         if (canMove)
         {
             if (Input.GetKeyDown(jumpKey) && !_isJumping && !_isDowning)
@@ -136,7 +155,7 @@ public class PlayerController : MonoBehaviour
 
             if (Input.GetKeyDown(downKey) && _isJumping && !_isDowning)
             {
-                _rigid2D.AddForce(-transform.up * jumpForce/1.2f);
+                _rigid2D.AddForce(-transform.up * jumpForce / 1.2f);
                 _isDowning = true;
             }
 
@@ -158,10 +177,12 @@ public class PlayerController : MonoBehaviour
             {
                 _rigid2D.AddForce(transform.right * key * walkForce);
             }
+
             if (key != 0)
             {
                 //transform.localScale = new Vector3(key, 1, 1);
             }
+
             _animator.speed = speedx * 0.5f;
 
             if (_animator.GetBool(IsJumping))
@@ -169,7 +190,7 @@ public class PlayerController : MonoBehaviour
                 _animator.speed = 1;
             }
         }
-        
+
         if (worldOutBottomLine.transform.position.y > transform.position.y)
         {
             _rigid2D.velocity = new Vector2(0, 0);
@@ -181,7 +202,7 @@ public class PlayerController : MonoBehaviour
     {
         if (col.CompareTag("Cloud"))
         {
-            if (_animator == null)_animator = GetComponent<Animator>();
+            if (_animator == null) _animator = GetComponent<Animator>();
             _animator.SetBool(IsJumping, false);
             _isJumping = false;
             _isDowning = false;
@@ -198,9 +219,17 @@ public class PlayerController : MonoBehaviour
             _isJumping = false;
             _isDowning = false;
         }
-        else if (col.CompareTag("Bullet"))
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Bullet"))
         {
-            Destroy(col.gameObject);
+            Destroy(other.gameObject);
+            GetDamage(boss.atk);
+        }
+        else if (other.CompareTag("Laser"))
+        {
             GetDamage(boss.atk);
         }
     }

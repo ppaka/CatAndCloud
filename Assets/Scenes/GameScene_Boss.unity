@@ -1351,7 +1351,7 @@ MonoBehaviour:
   leftKey: 276
   rightKey: 275
   downKey: 274
-  attackKey: 41
+  attackKey: 59
   canMove: 1
   canAttack: 0
   hpImage: {fileID: 80583114}

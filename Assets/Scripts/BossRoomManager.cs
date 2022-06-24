@@ -67,6 +67,7 @@ public class BossRoomManager : MonoBehaviour
         boss.virtualCam.gameObject.SetActive(false);
         yield return new WaitForSeconds(1.5f);
         boss.group.gameObject.SetActive(true);
+        boss.bossRoom = this;
         boss.teleportPosition = teleportPosition;
         _playerControllers = FindObjectsOfType<PlayerController>();
         foreach (var player in _playerControllers)

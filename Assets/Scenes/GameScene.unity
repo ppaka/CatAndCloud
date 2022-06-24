@@ -404,8 +404,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkForce: 40
-  curHp: 0
-  maxHp: 500
   worldOutBottomLine: {fileID: 66800179}
   spawnPoint: {fileID: 1781658073}
   jumpKey: 119
@@ -423,6 +421,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   attackTf: []
+  boss: {fileID: 0}
 --- !u!95 &213648849
 Animator:
   serializedVersion: 4
@@ -825,15 +824,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkForce: 40
-  curHp: 0
-  maxHp: 500
   worldOutBottomLine: {fileID: 66800179}
   spawnPoint: {fileID: 1781658073}
   jumpKey: 273
   leftKey: 276
   rightKey: 275
-  downKey: 115
-  attackKey: 102
+  downKey: 274
+  attackKey: 59
   canMove: 1
   canAttack: 0
   hpImage: {fileID: 0}
@@ -844,6 +841,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   attackTf: []
+  boss: {fileID: 0}
 --- !u!61 &868640362
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -83,9 +83,6 @@ public class SceneLoader : MonoBehaviour
 
     public void NoLoadChangeScene(string sceneName)
     {
-        
-        // 두트윈 시퀀스 킬
-
         fadeImg.DOFade(fadeValue, fadeDuration)
             .OnStart(() => { fadeImg.blocksRaycasts = true; })
             .OnComplete(() => { StartCoroutine(NoLoadScene(sceneName)); });
@@ -93,9 +90,6 @@ public class SceneLoader : MonoBehaviour
 
     public void ChangeSceneAdditive(string sceneName)
     {
-
-        // 두트윈 시퀀스 킬
-        
         StartCoroutine(LoadSceneAdditive(sceneName));
     }
 
