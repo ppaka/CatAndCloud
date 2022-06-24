@@ -10,6 +10,7 @@ public class BossRoomManager : MonoBehaviour
     public BossRoomEnterController enterController;
     public Transform allObj;
     public Another boss;
+    public Transform parentAltClouds;
     
     public Transform[] teleportPosition;
 
@@ -70,6 +71,7 @@ public class BossRoomManager : MonoBehaviour
         boss.bossRoom = this;
         boss.teleportPosition = teleportPosition;
         _playerControllers = FindObjectsOfType<PlayerController>();
+        parentAltClouds.gameObject.SetActive(true);
         foreach (var player in _playerControllers)
         {
             player.canMove = true;

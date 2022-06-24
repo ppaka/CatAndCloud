@@ -50,7 +50,6 @@ public class PlayerController : MonoBehaviour
     private void OnDestroy()
     {
         GameManager.alivePlayers--;
-        if (GameManager.alivePlayers <= 0) Application.Quit();
     }
 
     private void Attack()
@@ -209,12 +208,14 @@ public class PlayerController : MonoBehaviour
         }
         else if (col.CompareTag("Player"))
         {
+            if (_animator == null) _animator = GetComponent<Animator>();
             _animator.SetBool(IsJumping, false);
             _isJumping = false;
             _isDowning = false;
         }
         else if (col.CompareTag("Boss"))
         {
+            if (_animator == null) _animator = GetComponent<Animator>();
             _animator.SetBool(IsJumping, false);
             _isJumping = false;
             _isDowning = false;

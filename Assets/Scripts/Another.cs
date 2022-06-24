@@ -200,7 +200,7 @@ public class Another : MonoBehaviour
                 }
                 else
                 {
-                    for (var i = horizontalLasers.Length - 1; i >= 1; i--)
+                    for (var i = horizontalLasers.Length - 1; i >= 2; i--)
                     {
                         horizontalLasers[i].gameObject.SetActive(true);
 
