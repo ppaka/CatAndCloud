@@ -206,8 +206,8 @@ public class Another : MonoBehaviour
 
                         bossRoom.roomVCam.DOKill(true);
                         bossRoom.roomVCam
-                            .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
-                        yield return new WaitForSeconds(0.4f);
+                            .DOShakePosition(0.2f, 0.7f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                        yield return new WaitForSeconds(0.23f);
                     }
                 }
                 
@@ -224,7 +224,7 @@ public class Another : MonoBehaviour
                 }
                 bossRoom.roomVCam.DOKill(true);
                 bossRoom.roomVCam
-                    .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                    .DOShakePosition(0.2f, 1.2f, 5, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
                 yield return new WaitForSeconds(1);
                 for (var i = 0; i < horizontalLasers.Length; i++)
                 {
