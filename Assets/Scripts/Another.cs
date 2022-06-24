@@ -148,6 +148,7 @@ public class Another : MonoBehaviour
             }
             else if (currentAttackMode == AttackMode.FireLaser)
             {
+                transform.position = teleportPosition[Random.Range(0, teleportPosition.Length)].position;
                 for (var i = 0; i < lasers.Length; i++)
                 {
                     lasers[i].gameObject.SetActive(true);
@@ -179,6 +180,7 @@ public class Another : MonoBehaviour
             }
             else if (currentAttackMode == AttackMode.HorizontalLaser)
             {
+                transform.position = teleportPosition[Random.Range(0, teleportPosition.Length)].position;
                 if (Random.value > 0.5f)
                 {
                     for (var i = 0; i < horizontalLasers.Length; i++)
@@ -222,6 +224,7 @@ public class Another : MonoBehaviour
             }
             else
             {
+                transform.position = teleportPosition[Random.Range(0, teleportPosition.Length)].position;
                 bigLaser.gameObject.SetActive(true);
                 bigLaser.localScale = new Vector3(0.5f, bigLaser.localScale.y, bigLaser.localScale.z);
                 bossRoom.roomVCam.DOKill(true);
