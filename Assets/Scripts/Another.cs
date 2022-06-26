@@ -9,7 +9,8 @@ enum AttackMode
     FireBullet,
     FireLaser,
     HorizontalLaser,
-    BigAndSmallLaser
+    BigAndSmallLaser,
+    FireBomb
 }
 
 public class Another : MonoBehaviour
@@ -23,7 +24,7 @@ public class Another : MonoBehaviour
     public CanvasGroup group;
     public Image hpImage;
 
-    public int curHp, maxHp = 20000;
+    public int curHp, maxHp = 40000;
     public int atk = 40, def;
 
     public Transform[] teleportPosition;
@@ -39,6 +40,8 @@ public class Another : MonoBehaviour
     public BossRoomManager bossRoom;
 
     public SpriteRenderer spriteRenderer;
+
+    private int _lastRandomPositionIndex = -1;
 
     public void GetDamage(int dmg)
     {
@@ -56,10 +59,12 @@ public class Another : MonoBehaviour
         {
             laser.gameObject.SetActive(false);
         }
+
         foreach (var laser in horizontalLasers)
         {
             laser.gameObject.SetActive(false);
         }
+
         Time.timeScale = 0;
         bossRoom.lockToScreenAllPlayers = false;
         foreach (var player in _playerControllers)
@@ -112,7 +117,7 @@ public class Another : MonoBehaviour
 
     private void Update()
     {
-        hpImage.fillAmount = (float) curHp / maxHp;
+        hpImage.fillAmount = (float)curHp / maxHp;
     }
 
     public void StartAttack()
@@ -120,135 +125,190 @@ public class Another : MonoBehaviour
         _coroutine = StartCoroutine(Attack());
     }
 
+    public void SpawnBomb(int rate, Vector3 position)
+    {
+        for (int i = 0; i < rate; i++)
+        {
+            var cache = Instantiate(bulletPrefab);
+            cache.transform.position = position;
+            cache.transform.Rotate(new Vector3(0, 0, 360f * i / rate - 90));
+            cache.moveDirection = cache.transform.localRotation * -cache.transform.up;
+        }
+    }
+
     private IEnumerator Attack()
     {
         while (true)
         {
-            AttackMode[] modes = {AttackMode.FireBullet, AttackMode.FireLaser, AttackMode.FireBullet, AttackMode.HorizontalLaser, AttackMode.BigAndSmallLaser};
-            var  currentAttackMode = modes[Random.Range(0, modes.Length)];
+            AttackMode[] modes =
+            {
+                AttackMode.FireBullet, AttackMode.FireLaser, AttackMode.HorizontalLaser,
+                AttackMode.BigAndSmallLaser, AttackMode.FireBomb
+            };
+            var currentAttackMode = modes[Random.Range(0, modes.Length)];
+            if (currentAttackMode == _lastAttack) continue;
+
+            var randomPosIndex = Random.Range(0, teleportPosition.Length);
+            while (randomPosIndex == _lastRandomPositionIndex)
+            {
+                randomPosIndex = Random.Range(0, teleportPosition.Length);
+            }
+
             yield return new WaitForSeconds(1.8f);
 
-
-            if (currentAttackMode == AttackMode.FireBullet)
+            switch (currentAttackMode)
             {
-                spriteRenderer.flipX = false;
-                transform.position = teleportPosition[Random.Range(0, teleportPosition.Length)].position;
-                for (int j = 0; j < 30; j++)
+                case AttackMode.FireBullet:
                 {
-                    for (var i = 0; i < GameManager.players; i++)
+                    spriteRenderer.flipX = false;
+                    transform.position = teleportPosition[randomPosIndex].position;
+                    for (int j = 0; j < 30; j++)
                     {
-                        if (!_playerControllers[i]) continue;
-                        var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-                        bullet.moveDirection =
-                            (_playerControllers[i].transform.position - transform.position).normalized;
+                        for (var i = 0; i < GameManager.players; i++)
+                        {
+                            if (!_playerControllers[i]) continue;
+                            var bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+                            bullet.moveDirection =
+                                (_playerControllers[i].transform.position - transform.position).normalized;
+                        }
+
+                        yield return new WaitForSeconds(0.1f);
+                        if (j == 9) yield return new WaitForSeconds(0.9f);
+                        else if (j == 19) yield return new WaitForSeconds(0.9f);
+                        else if (j == 29) yield return new WaitForSeconds(0.9f);
                     }
 
-                    yield return new WaitForSeconds(0.1f);
-                    if (j == 9) yield return new WaitForSeconds(0.9f);
-                    else if (j == 19) yield return new WaitForSeconds(0.9f);
-                    else if (j == 29) yield return new WaitForSeconds(0.9f);
+                    break;
                 }
-            }
-            else if (currentAttackMode == AttackMode.FireLaser)
-            {
-                spriteRenderer.flipX = true;
-                transform.position = teleportPosition[Random.Range(0, teleportPosition.Length)].position;
-                for (var i = 0; i < lasers.Length; i++)
+                case AttackMode.FireLaser:
                 {
-                    lasers[i].gameObject.SetActive(true);
-
-                    bossRoom.roomVCam.DOKill(true);
-                    bossRoom.roomVCam
-                        .DOShakePosition(0.5f, 1f, 8, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
-                    yield return new WaitForSeconds(0.8f);
-                }
-
-                foreach (var laser in lasers)
-                {
-                    laser.gameObject.SetActive(false);
-                }
-                yield return new WaitForSeconds(1f);
-
-                foreach (var laser in lasers)
-                {
-                    laser.gameObject.SetActive(true);
-                    bossRoom.roomVCam.DOKill(true);
-                    bossRoom.roomVCam
-                        .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
-                }
-                yield return new WaitForSeconds(1f);
-                foreach (var laser in lasers)
-                {
-                    laser.gameObject.SetActive(false);
-                }
-            }
-            else if (currentAttackMode == AttackMode.HorizontalLaser)
-            {
-                spriteRenderer.flipX = false;
-                transform.position = teleportPosition[Random.Range(0, teleportPosition.Length)].position;
-                if (Random.value > 0.5f)
-                {
-                    for (var i = 0; i < horizontalLasers.Length; i++)
+                    spriteRenderer.flipX = true;
+                    transform.position = teleportPosition[randomPosIndex].position;
+                    for (var i = 0; i < lasers.Length; i++)
                     {
-                        horizontalLasers[i].gameObject.SetActive(true);
+                        lasers[i].gameObject.SetActive(true);
 
+                        bossRoom.roomVCam.DOKill(true);
+                        bossRoom.roomVCam
+                            .DOShakePosition(0.5f, 1f, 8, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                        yield return new WaitForSeconds(0.8f);
+                    }
+
+                    foreach (var laser in lasers)
+                    {
+                        laser.gameObject.SetActive(false);
+                    }
+
+                    yield return new WaitForSeconds(1f);
+
+                    foreach (var laser in lasers)
+                    {
+                        laser.gameObject.SetActive(true);
                         bossRoom.roomVCam.DOKill(true);
                         bossRoom.roomVCam
                             .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
-                        yield return new WaitForSeconds(0.4f);
                     }
+
+                    yield return new WaitForSeconds(1f);
+                    foreach (var laser in lasers)
+                    {
+                        laser.gameObject.SetActive(false);
+                    }
+
+                    break;
                 }
-                else
+                case AttackMode.HorizontalLaser:
                 {
-                    for (var i = horizontalLasers.Length - 1; i >= 2; i--)
+                    spriteRenderer.flipX = false;
+                    transform.position = teleportPosition[randomPosIndex].position;
+                    if (Random.value > 0.5f)
+                    {
+                        for (var i = 0; i < horizontalLasers.Length - 1; i++)
+                        {
+                            horizontalLasers[i].gameObject.SetActive(true);
+
+                            bossRoom.roomVCam.DOKill(true);
+                            bossRoom.roomVCam
+                                .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                            yield return new WaitForSeconds(0.4f);
+                        }
+                    }
+                    else
+                    {
+                        for (var i = horizontalLasers.Length - 1 - 1; i >= 0; i--)
+                        {
+                            horizontalLasers[i].gameObject.SetActive(true);
+
+                            bossRoom.roomVCam.DOKill(true);
+                            bossRoom.roomVCam
+                                .DOShakePosition(0.2f, 0.7f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                            yield return new WaitForSeconds(0.23f);
+                        }
+                    }
+
+                    yield return new WaitForSeconds(0.4f);
+                    for (var i = 0; i < horizontalLasers.Length; i++)
+                    {
+                        horizontalLasers[i].gameObject.SetActive(false);
+                    }
+
+                    yield return new WaitForSeconds(0.8f);
+
+                    for (var i = 0; i < horizontalLasers.Length - 1; i++)
                     {
                         horizontalLasers[i].gameObject.SetActive(true);
-
-                        bossRoom.roomVCam.DOKill(true);
-                        bossRoom.roomVCam
-                            .DOShakePosition(0.2f, 0.7f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
-                        yield return new WaitForSeconds(0.23f);
                     }
-                }
-                
-                yield return new WaitForSeconds(0.4f);
-                for (var i = 0; i < horizontalLasers.Length; i++)
-                {
-                    horizontalLasers[i].gameObject.SetActive(false);
-                }
-                yield return new WaitForSeconds(0.8f);
 
-                for (var i = 0; i < horizontalLasers.Length; i++)
-                {
-                    horizontalLasers[i].gameObject.SetActive(true);
+                    bossRoom.roomVCam.DOKill(true);
+                    bossRoom.roomVCam
+                        .DOShakePosition(0.2f, 1.2f, 5, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                    yield return new WaitForSeconds(1);
+                    for (var i = 0; i < horizontalLasers.Length; i++)
+                    {
+                        horizontalLasers[i].gameObject.SetActive(false);
+                    }
+
+                    break;
                 }
-                bossRoom.roomVCam.DOKill(true);
-                bossRoom.roomVCam
-                    .DOShakePosition(0.2f, 1.2f, 5, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
-                yield return new WaitForSeconds(1);
-                for (var i = 0; i < horizontalLasers.Length; i++)
+                case AttackMode.BigAndSmallLaser:
                 {
-                    horizontalLasers[i].gameObject.SetActive(false);
+                    spriteRenderer.flipX = true;
+                    transform.position = teleportPosition[randomPosIndex].position;
+                    bigLaser.gameObject.SetActive(true);
+                    bigLaser.localScale = new Vector3(0.5f, bigLaser.localScale.y, bigLaser.localScale.z);
+                    bossRoom.roomVCam.DOKill(true);
+                    bossRoom.roomVCam
+                        .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
+                    yield return new DOTweenCYInstruction.WaitForCompletion(bigLaser.DOScaleX(6.95f, 0.7f)
+                        .SetUpdate(true));
+                    yield return new WaitForSeconds(0.6f);
+                    smallLasers[0].gameObject.SetActive(true);
+                    smallLasers[1].gameObject.SetActive(true);
+                    yield return new WaitForSeconds(1f);
+                    bigLaser.gameObject.SetActive(false);
+                    smallLasers[0].gameObject.SetActive(false);
+                    smallLasers[1].gameObject.SetActive(false);
+                    break;
+                }
+                case AttackMode.FireBomb:
+                {
+                    spriteRenderer.flipX = false;
+                    transform.position = teleportPosition[randomPosIndex].position;
+                    for (var j = 0; j < 5; j++)
+                    {
+                        if (j % 2 == 0) SpawnBomb(90, transform.position);
+                        else SpawnBomb(60, transform.position);
+
+
+                        yield return new WaitForSeconds(1f);
+                    }
+
+                    break;
                 }
             }
-            else
-            {
-                spriteRenderer.flipX = true;
-                transform.position = teleportPosition[Random.Range(0, teleportPosition.Length)].position;
-                bigLaser.gameObject.SetActive(true);
-                bigLaser.localScale = new Vector3(0.5f, bigLaser.localScale.y, bigLaser.localScale.z);
-                bossRoom.roomVCam.DOKill(true);
-                bossRoom.roomVCam
-                    .DOShakePosition(0.2f, 1f, 4, 90f, false, true).SetEase(Ease.Linear).SetUpdate(true);
-                yield return new DOTweenCYInstruction.WaitForCompletion(bigLaser.DOScaleX(6.95f, 0.7f).SetUpdate(true));
-                yield return new WaitForSeconds(0.6f);
-                smallLasers[0].gameObject.SetActive(true);
-                smallLasers[1].gameObject.SetActive(true);
-                yield return new WaitForSeconds(1f);
-                bigLaser.gameObject.SetActive(false);
-                smallLasers[0].gameObject.SetActive(false);
-                smallLasers[1].gameObject.SetActive(false);
-            }
+
+            _lastAttack = currentAttackMode;
+            _lastRandomPositionIndex = randomPosIndex;
             yield return null;
         }
     }
