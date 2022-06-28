@@ -40,7 +40,8 @@ public class PlayerController : MonoBehaviour
     public Another boss;
 
     private float timeSinceLastHit = 100, timeSinceLastFire = 100;
-    private float _invincibleEffectTime = 1.5f, _invincibleTime = 1.5f;
+    private float _invincibleEffectTime = 1, _invincibleTime = 1;
+    private float _defaultTime = 1;
 
     private void Awake()
     {
@@ -84,8 +85,8 @@ public class PlayerController : MonoBehaviour
         curHp -= 100 / (100 + def) * dmg;
 
         timeSinceLastHit = 0;
-        _invincibleTime = 1.5f;
-        _invincibleEffectTime = 1.5f;
+        _invincibleTime = _defaultTime;
+        _invincibleEffectTime =_defaultTime;
         hpImage.fillAmount = (float) curHp / maxHp;
         if (curHp <= 0) Destroy(gameObject);
     }

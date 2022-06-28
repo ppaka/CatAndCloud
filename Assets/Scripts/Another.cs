@@ -24,8 +24,8 @@ public class Another : MonoBehaviour
     public CanvasGroup group;
     public Image hpImage;
 
-    public int curHp, maxHp = 40000;
-    public int atk = 40, def;
+    private int curHp, maxHp = 40000;
+    public int atk = 100, def;
 
     public Transform[] teleportPosition;
     public Transform[] lasers;
@@ -117,7 +117,7 @@ public class Another : MonoBehaviour
 
     private void Update()
     {
-        hpImage.fillAmount = (float)curHp / maxHp;
+        hpImage.fillAmount = (float) curHp / maxHp;
     }
 
     public void StartAttack()
@@ -294,14 +294,18 @@ public class Another : MonoBehaviour
                 {
                     spriteRenderer.flipX = false;
                     transform.position = teleportPosition[randomPosIndex].position;
-                    for (var j = 0; j < 5; j++)
-                    {
-                        if (j % 2 == 0) SpawnBomb(90, transform.position);
-                        else SpawnBomb(60, transform.position);
-
-
-                        yield return new WaitForSeconds(1f);
-                    }
+                    SpawnBomb(90, transform.position);
+                    yield return new WaitForSeconds(1f);
+                    SpawnBomb(60, transform.position);
+                    yield return new WaitForSeconds(1f);
+                    SpawnBomb(90, transform.position);
+                    yield return new WaitForSeconds(1f);
+                    SpawnBomb(60, transform.position);
+                    yield return new WaitForSeconds(1f);
+                    SpawnBomb(90, transform.position);
+                    yield return new WaitForSeconds(1f);
+                    SpawnBomb(60, transform.position);
+                    yield return new WaitForSeconds(1f);
 
                     break;
                 }
