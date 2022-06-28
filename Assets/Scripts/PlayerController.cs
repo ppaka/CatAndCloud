@@ -43,6 +43,8 @@ public class PlayerController : MonoBehaviour
     private float _invincibleEffectTime = 0.7f, _invincibleTime = 0.7f;
     private float _defaultTime = 0.7f;
 
+    public ParticleSystem particle;
+
     private void Awake()
     {
         GameManager.alivePlayers = GameManager.players;
@@ -57,19 +59,21 @@ public class PlayerController : MonoBehaviour
     {
         if (!_spriteRenderer.flipX)
         {
-            var col = Physics2D.OverlapCircle(attackTf[0].position, 0.8f, bossLayer);
+            var col = Physics2D.OverlapCircle(attackTf[0].position, 0.9f, bossLayer);
             if (!col) return;
             boss.GetDamage(atk);
+            particle.Play();
         }
         else
         {
-            var col = Physics2D.OverlapCircle(attackTf[1].position, 0.8f, bossLayer);
+            var col = Physics2D.OverlapCircle(attackTf[1].position, 0.9f, bossLayer);
             if (!col) return;
             boss.GetDamage(atk);
+            particle.Play();
         }
     }
 
-    public bool isInvicible()
+    private bool isInvicible()
     {
         if (timeSinceLastHit < _invincibleTime)
         {
@@ -83,7 +87,6 @@ public class PlayerController : MonoBehaviour
     {
         if (isInvicible()) return;
         curHp -= dmg;
-        print(curHp);
 
         timeSinceLastHit = 0;
         _invincibleTime = _defaultTime;
