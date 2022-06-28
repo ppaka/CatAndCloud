@@ -33,15 +33,15 @@ public class PlayerController : MonoBehaviour
     public Image hpImage;
     public GameObject hpCanvasObject;
 
-    public int atk = 100, def;
+    public int atk = 100;
     public LayerMask bossLayer;
     public Transform[] attackTf;
 
     public Another boss;
 
     private float timeSinceLastHit = 100, timeSinceLastFire = 100;
-    private float _invincibleEffectTime = 1, _invincibleTime = 1;
-    private float _defaultTime = 1;
+    private float _invincibleEffectTime = 0.7f, _invincibleTime = 0.7f;
+    private float _defaultTime = 0.7f;
 
     private void Awake()
     {
@@ -82,7 +82,8 @@ public class PlayerController : MonoBehaviour
     public void GetDamage(int dmg)
     {
         if (isInvicible()) return;
-        curHp -= 100 / (100 + def) * dmg;
+        curHp -= dmg;
+        print(curHp);
 
         timeSinceLastHit = 0;
         _invincibleTime = _defaultTime;
@@ -228,11 +229,11 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Bullet"))
         {
             Destroy(other.gameObject);
-            GetDamage(boss.atk);
+            GetDamage(boss.attack);
         }
         else if (other.CompareTag("Laser"))
         {
-            GetDamage(boss.atk);
+            GetDamage(boss.attack);
         }
     }
 }

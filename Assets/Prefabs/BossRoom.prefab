@@ -2483,7 +2483,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5565843332732982239
 Transform:
   m_ObjectHideFlags: 0
@@ -4281,7 +4281,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7774998, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -7424,6 +7424,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7331792228051710025}
     m_Modifications:
+    - target: {fileID: 1728863265873436636, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
+      propertyPath: atk
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1728863265873436636, guid: c8c8407ccd774e9408b736d9dcfbd4c9, type: 3}
       propertyPath: group
       value: 

@@ -24,8 +24,8 @@ public class Another : MonoBehaviour
     public CanvasGroup group;
     public Image hpImage;
 
-    private int curHp, maxHp = 40000;
-    public int atk = 100, def;
+    private int curHp, maxHp = 30000;
+    [System.NonSerialized] public int attack = 50;
 
     public Transform[] teleportPosition;
     public Transform[] lasers;
@@ -45,7 +45,7 @@ public class Another : MonoBehaviour
 
     public void GetDamage(int dmg)
     {
-        curHp -= 100 / (100 + def) * dmg;
+        curHp -= dmg;
         if (curHp <= 0)
         {
             StopCoroutine(_coroutine);
