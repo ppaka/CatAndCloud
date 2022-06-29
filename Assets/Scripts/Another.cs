@@ -358,6 +358,11 @@ public class Another : MonoBehaviour
                     yield return new DOTweenCYInstruction.WaitForCompletion(bigBomb.DOLocalMoveY(5.16f, 3f)
                         .SetEase(Ease.Linear));
                     bigBomb.gameObject.SetActive(false);
+                    
+                    bossRoom.roomVCam.DOKill(true);
+                    var tween = bossRoom.roomVCam
+                        .DOShakePosition(3f, 1.15f, 10, 90f, false, true).SetEase(Ease.Linear);
+
                     SpawnBomb(120, bigBomb.position);
                     yield return new WaitForSeconds(0.15f);
                     SpawnBomb(100, bigBomb.position);
@@ -375,6 +380,8 @@ public class Another : MonoBehaviour
                     SpawnBomb(80, bigBomb.position);
                     yield return new WaitForSeconds(0.15f);
                     SpawnBomb(80, bigBomb.position);
+                    
+                    yield return new DOTweenCYInstruction.WaitForCompletion(tween);
 
                     break;
                 }
