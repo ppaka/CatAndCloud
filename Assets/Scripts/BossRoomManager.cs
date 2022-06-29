@@ -59,7 +59,11 @@ public class BossRoomManager : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.SetText("..."));
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+        yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.SetText("애옹"));
+        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
         yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.SetText(".........."));
+        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+        yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.SetText("덤벼라"));
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
         DialogueManager.Instance.FadeOut();
         yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.Close());

@@ -10,7 +10,8 @@ enum AttackMode
     FireLaser,
     HorizontalLaser,
     BigAndSmallLaser,
-    FireBomb
+    FireBomb,
+    BigBomb
 }
 
 public class Another : MonoBehaviour
@@ -32,6 +33,8 @@ public class Another : MonoBehaviour
     public Transform[] horizontalLasers;
     public Transform bigLaser;
     public Transform[] smallLasers;
+    public Transform[] bombs;
+    public Transform bigBomb;
 
     private PlayerController[] _playerControllers;
 
@@ -84,9 +87,9 @@ public class Another : MonoBehaviour
         DialogueManager.Instance.FadeIn();
         DialogueManager.Instance.Open();
         yield return new WaitForSecondsRealtime(0.2f);
-        yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.SetText(".....!?"));
+        yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.SetText("애옹?!"));
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-        yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.SetText("!!!!!!"));
+        yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.SetText("!!!!!!!!"));
         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
         DialogueManager.Instance.FadeOut();
         yield return new DOTweenCYInstruction.WaitForCompletion(DialogueManager.Instance.Close());
@@ -143,7 +146,7 @@ public class Another : MonoBehaviour
             AttackMode[] modes =
             {
                 AttackMode.FireBullet, AttackMode.FireLaser, AttackMode.HorizontalLaser,
-                AttackMode.BigAndSmallLaser, AttackMode.FireBomb
+                AttackMode.BigAndSmallLaser, AttackMode.FireBomb, AttackMode.BigBomb
             };
             var currentAttackMode = modes[Random.Range(0, modes.Length)];
             if (currentAttackMode == _lastAttack) continue;
@@ -306,6 +309,72 @@ public class Another : MonoBehaviour
                     yield return new WaitForSeconds(1f);
                     SpawnBomb(60, transform.position);
                     yield return new WaitForSeconds(1f);
+
+                    break;
+                }
+                case AttackMode.BigBomb:
+                {
+                    var random = Random.Range(0, 2);
+                    if (random == 0)
+                    {
+                        for (var i = 0; i < bombs.Length; i++)
+                        {
+                            var localPosition = bombs[i].localPosition;
+                            localPosition.y = 10;
+                            bombs[i].localPosition = localPosition;
+                            var i1 = i;
+                            bombs[i].gameObject.SetActive(true);
+                            bombs[i].DOLocalMoveY(0.8f, 2f).SetEase(Ease.Linear)
+                                .OnComplete(() =>
+                                {
+                                    bombs[i1].gameObject.SetActive(false);
+                                    SpawnBomb(40, bombs[i1].position);
+                                });
+                            yield return new WaitForSeconds(1f);
+                        }
+                    }
+                    else
+                    {
+                        for (var i = bombs.Length - 1; i >= 0; i--)
+                        {
+                            var localPosition = bombs[i].localPosition;
+                            localPosition.y = 10;
+                            bombs[i].localPosition = localPosition;
+                            var i1 = i;
+                            bombs[i].gameObject.SetActive(true);
+                            bombs[i].DOLocalMoveY(0.8f, 2f).SetEase(Ease.Linear)
+                                .OnComplete(() =>
+                                {
+                                    bombs[i1].gameObject.SetActive(false);
+                                    SpawnBomb(40, bombs[i1].position);
+                                });
+                            yield return new WaitForSeconds(1f);
+                        }
+                    }
+                    
+                    yield return new WaitForSeconds(3.5f);
+                    bigBomb.localPosition = new Vector3(0, 14.6457f, 0);
+                    bigBomb.gameObject.SetActive(true);
+                    yield return new DOTweenCYInstruction.WaitForCompletion(bigBomb.DOLocalMoveY(5.16f, 3f)
+                        .SetEase(Ease.Linear));
+                    bigBomb.gameObject.SetActive(false);
+                    SpawnBomb(120, bigBomb.position);
+                    yield return new WaitForSeconds(0.15f);
+                    SpawnBomb(100, bigBomb.position);
+                    yield return new WaitForSeconds(0.15f);
+                    SpawnBomb(120, bigBomb.position);
+                    yield return new WaitForSeconds(0.15f);
+                    SpawnBomb(100, bigBomb.position);
+                    yield return new WaitForSeconds(0.15f);
+                    SpawnBomb(120, bigBomb.position);
+                    yield return new WaitForSeconds(0.15f);
+                    SpawnBomb(100, bigBomb.position);
+                    yield return new WaitForSeconds(0.15f);
+                    SpawnBomb(80, bigBomb.position);
+                    yield return new WaitForSeconds(0.15f);
+                    SpawnBomb(80, bigBomb.position);
+                    yield return new WaitForSeconds(0.15f);
+                    SpawnBomb(80, bigBomb.position);
 
                     break;
                 }
